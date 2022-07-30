@@ -1,0 +1,207 @@
+﻿
+<!--
+kospaco
+On-Browser Spatial Competition Simulator 
+Copyright (C) 2022 Koji Yamamoto 
+
+以下を変えられるように？
+・正規分布か一様分布か
+・疎外による棄権を設定するか
+・確率的な投票にするか
+
+-->
+
+<!DOCTYPE html>
+<html lang = "ja">
+
+<!-- version info -->
+<script>
+  let verinfo = "2022-07-30"
+</script>
+
+<head>
+
+  <meta charset = "UTF-8">
+
+  <title>On-Browser Spatial Competition Simulator "kospaco"</title>
+
+  <style>
+
+      button {
+        font-size: 12px;
+      }
+
+      div {
+        font-size: 12px;
+      }
+      
+      .footer {
+        font-size: 8px;
+      }
+
+      /* 2 * 2 box-grid layout */
+      .main-container {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: auto auto; 
+        grid-template-rows: auto auto;
+      }
+
+      .box-top-left {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        background: #fc2;
+      }
+
+      .box-top-right {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        background: #f22;
+      }
+
+      .box-bottom-left {
+        grid-column: 1 / 2; 
+        grid-row: 2 / 3;
+        background: #2f2;
+      }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class = "main-container">
+
+    <div class = "box-top-left">
+
+      <div id = "msg">（空間競争シミュレーション）</div>
+
+      <div>
+
+        <label>手動モード用？　</label>
+
+        <button id = "setupButton">準備（というか点を描く）</button>
+
+        <button id = "onestepButton">1ステップ進める</button>
+
+        <button id = "initButton">初期状態に戻す</button>
+
+      </div>
+
+    </div>
+
+      <div class = "box-top-right">
+        
+        <button id = "drawSampleButton" disabled>標本を選ぶ、そしてグラフに点を描く</button>
+        <label for = "ssizeInput">標本サイズ</label>
+        <span id = "ssizeDesc"></span>
+        <input type = "range" id = "ssizeInput" name = "ssizeInput" min = "1" max = "50" disabled>
+
+        <div>
+          <label>自動モード用　</label>
+          <button id = "autoModeStartButton" disabled>自動モードで開始</button>
+          <button id = "autoModeStopButton" disabled>中止</button>
+          <label for = "speedInput">速さ</label>
+          <span id = "speedDesc"></span>
+          <input type = "range" id = "speedInput" name = "speedInput" min = "1" max = "10" disabled>
+        </div>
+
+      </div>
+
+
+    <div class = "box-bottom-left">
+      <svg id = "svgcanv" width = "400" height = "400">
+      </svg>
+    </div>
+
+  </div>
+
+  <div class = "footer" id = "footer"></div>
+
+</body>
+
+<!-- GUI要素とJS変数の関連付け -->
+<script>
+
+  let msg = document.getElementById( "msg");
+
+  let setupButton = document.getElementById( "setupButton");
+
+  let onestepButton = document.getElementById( "onestepButton");
+
+  let initButton = document.getElementById( "initButton");
+
+  let svgcanv = document.getElementById( "svgcanv");
+
+  let footer = document.getElementById( "footer");
+
+</script>
+
+<!-- 外部スクリプト -->
+<script src = "kutil.js"></script>
+<script src = "svggraph.js"></script>
+<script src = "voter.js"></script>
+<script src = "party.js"></script>
+<script src = "simulate.js"></script>
+
+<!-- 初期処理 -->
+<script>
+
+  footer.innerText = 'On-Browser Spatial Competition Simulator "kospaco" Ver. ' + verinfo + ' -- Copyright (C) 2022 Koji Yamamoto'; 
+
+  svggraphobj.clear();
+  svggraphobj.drawBackground();
+
+</script>
+
+<!-- イベント定義 -->
+<script>
+
+  setupButton.addEventListener(
+    "click",
+    () => {
+
+      votergroup.createVoters( 1000);
+      votergroup.plot();
+
+      partygroup.createParties( 2);
+      partygroup.plot();
+
+      setupButton.disabled = true;
+
+    }
+  )
+
+  onestepButton.addEventListener(
+    "click",
+    () => {
+
+      election();
+
+      msg.innerHTML = "第1政党の得票：" + partygroup.parties[ 0].vote + "　第2政党の得票：" + partygroup.parties[ 1].vote;
+      svggraphobj.clear();
+      svggraphobj.drawBackground();
+      votergroup.plot();
+      partygroup.plot();
+
+      partymove();
+
+    }
+  )
+
+  initButton.addEventListener(
+    "click",
+    () => {
+
+      svggraphobj.clear();
+      svggraphobj.drawBackground();
+
+      setupButton.disabled = false;
+
+    }
+  )
+
+</script>
+
+</html>
