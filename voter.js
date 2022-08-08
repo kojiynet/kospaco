@@ -6,6 +6,7 @@ voter.js
 
 kutil.jsが読まれている必要がある。
 svggraph.jsが読まれている必要がある。
+svggraphobjが定義されている必要がある。
 
 */
 
@@ -20,6 +21,7 @@ class VoterType {
         this.color_b = 128;
     }
 
+    // 政党の色を示すRGBのリストを与える。有権者はこれをもとに薄めた色になる。
     setPartyRGBVec( rgbvec0)
     {
         if ( rgbvec0.length != 3){
@@ -49,11 +51,13 @@ class VoterGroupType {
     {
         this.voters = []
         for ( let i = 0; i < nvoters0; ++i){
-            let x = getContinuousUniformRandom( -3, 3);
-//            let x = getTrNormalRandom( -3, 3, 0, 1);
+
+            // 距離計測の際の誤差を避けたいので、-3.00から3.00までの0.01刻みの一様乱数にする。
+            let x = getDiscreteUniformRandom( -300, 300) / 100;
             let y = getContinuousUniformRandom( -1, 1);
             let vobj = new VoterType( x, y);
             this.voters.push( vobj);
+
         }
     }
 

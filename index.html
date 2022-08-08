@@ -4,6 +4,8 @@ kospaco
 On-Browser Spatial Competition Simulator 
 Copyright (C) 2022 Koji Yamamoto 
 
+・結果のグラフ＝位置の軌跡と、得票数の軌跡を。
+
 以下を変えられるように？
 ・正規分布か一様分布か
 ・疎外による棄権を設定するか
@@ -16,7 +18,7 @@ Copyright (C) 2022 Koji Yamamoto
 
 <!-- version info -->
 <script>
-  let verinfo = "2022-07-30"
+  let verinfo = "2022-08-08"
 </script>
 
 <head>
@@ -65,6 +67,12 @@ Copyright (C) 2022 Koji Yamamoto
         background: #2f2;
       }
 
+      .box-bottom-right {
+        grid-column: 2 / 3; 
+        grid-row: 2 / 3;
+        background: #cf2;
+      }
+
   </style>
 
 </head>
@@ -86,6 +94,16 @@ Copyright (C) 2022 Koji Yamamoto
         <button id = "onestepButton">1ステップ進める</button>
 
         <button id = "initButton">初期状態に戻す</button>
+
+      </div>
+
+      <div>
+
+        <form id = "partymoveRadio">
+          <label>政党の動き　</label>
+          <label><input type = "radio" name = "partymove" value = "trialerror">試行錯誤</label>
+          <label><input type = "radio" name = "partymove" value = "random">ランダム</label>
+        </form>
 
       </div>
 
@@ -111,7 +129,12 @@ Copyright (C) 2022 Koji Yamamoto
 
 
     <div class = "box-bottom-left">
-      <svg id = "svgcanv" width = "400" height = "400">
+      <svg id = "spacecanvas" width = "400" height = "400">
+      </svg>
+    </div>
+
+    <div class = "box-bottom-right">
+      <svg id = "resultcanvas" width = "400" height = "400">
       </svg>
     </div>
 
@@ -132,7 +155,9 @@ Copyright (C) 2022 Koji Yamamoto
 
   let initButton = document.getElementById( "initButton");
 
-  let svgcanv = document.getElementById( "svgcanv");
+  let partymoveRadio = document.getElementById( "partymoveRadio");
+
+  let spacecanvas = document.getElementById( "spacecanvas");
 
   let footer = document.getElementById( "footer");
 
@@ -150,8 +175,14 @@ Copyright (C) 2022 Koji Yamamoto
 
   footer.innerText = 'On-Browser Spatial Competition Simulator "kospaco" Ver. ' + verinfo + ' -- Copyright (C) 2022 Koji Yamamoto'; 
 
+  let svggraphobj = new SvgGraphType( spacecanvas);
   svggraphobj.clear();
   svggraphobj.drawBackground();
+
+  let partystep = 0.2;
+
+  // 初期状態では「試行錯誤」にチェックを入れる。
+  partymoveRadio.elements[ 0].checked = true;
 
 </script>
 
@@ -177,6 +208,14 @@ Copyright (C) 2022 Koji Yamamoto
     "click",
     () => {
 
+      let partymovevalue = partymoveRadio.elements[ "partymove"].value;
+
+      if ( partymovevalue == "random"){
+        partymoveRandom();
+      } else {
+        partymoveTrialError();
+      }
+
       election();
 
       msg.innerHTML = "第1政党の得票：" + partygroup.parties[ 0].vote + "　第2政党の得票：" + partygroup.parties[ 1].vote;
@@ -184,8 +223,6 @@ Copyright (C) 2022 Koji Yamamoto
       svggraphobj.drawBackground();
       votergroup.plot();
       partygroup.plot();
-
-      partymove();
 
     }
   )

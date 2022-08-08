@@ -1,9 +1,12 @@
 'use strict'
 
 /*
+
 svggraph.js
 
-すでにsvgcanvが定義されている必要がある。
+クラスだけを定義する。
+インスタンスはつくらない。
+
 */
 
 // Canvas Point Transformer
@@ -59,40 +62,43 @@ class CanvTrans {
 // SVG Graph-drawing class
 class SvgGraphType {
 
-    constructor()
+    // svgcanv0は描画対象のSVGタグの要素
+    constructor( svgcanv0)
     {
-      
-      this.canvasW = svgcanv.getAttribute( "width");
-      this.canvasH = svgcanv.getAttribute( "height");
-  
-      this.screenx1 = 40; // canvasのうち、左側40は余白
-      this.screeny1 = 20; // canvasのうち、上側20は余白
-      this.screenx2 = this.canvasW - 20; // canvasのうち、右側20は余白
-      this.screeny2 = this.canvasH - 40; // canvasのうち、下側40は余白
-  
-      // 理論座標系のx範囲
-      this.mathx1 = -3;
-      this.mathx2 =  3;
 
-      // 理論座標系のy範囲
-      this.mathy1 = -3;
-      this.mathy2 =  3;
-  
-      // x方向とy方向の目盛の間隔
-      this.xstep = 1;
-      this.ystep = 1;
-  
-      this.ct = new CanvTrans(
-        this.screenx1, this.screeny1, this.screenx2, this.screeny2,
-        this.mathx1, this.mathy1, this.mathx2, this.mathy2
-      );
+        this.canvasobj = svgcanv0;
+
+        this.canvasW = this.canvasobj.getAttribute( "width");
+        this.canvasH = this.canvasobj.getAttribute( "height");
+
+        this.screenx1 = 40; // canvasのうち、左側40は余白
+        this.screeny1 = 20; // canvasのうち、上側20は余白
+        this.screenx2 = this.canvasW - 20; // canvasのうち、右側20は余白
+        this.screeny2 = this.canvasH - 40; // canvasのうち、下側40は余白
+
+        // 理論座標系のx範囲
+        this.mathx1 = -3;
+        this.mathx2 =  3;
+
+        // 理論座標系のy範囲
+        this.mathy1 = -3;
+        this.mathy2 =  3;
+
+        // x方向とy方向の目盛の間隔
+        this.xstep = 1;
+        this.ystep = 1;
+
+        this.ct = new CanvTrans(
+            this.screenx1, this.screeny1, this.screenx2, this.screeny2,
+            this.mathx1, this.mathy1, this.mathx2, this.mathy2
+        );
   
     }
   
     clear()
     {
-        while ( svgcanv.firstChild != null) {
-            svgcanv.removeChild( svgcanv.firstChild);
+        while ( this.canvasobj.firstChild != null) {
+            this.canvasobj.removeChild( this.canvasobj.firstChild);
         }
     }
 
@@ -122,7 +128,7 @@ class SvgGraphType {
             rectobj.setAttribute( "height", String( screeny2 - screeny1));
             rectobj.setAttribute( "fill", "white");
             rectobj.setAttribute( "stroke", "white");
-            svgcanv.appendChild( rectobj);
+            this.canvasobj.appendChild( rectobj);
         }
 
         // x軸タイトル追加
@@ -136,7 +142,7 @@ class SvgGraphType {
             textobj.setAttribute( "text-anchor", "middle");
             textobj.setAttribute( "dominant-baseline", "alphabetic");
             textobj.textContent = "xTitle横軸タイトル";
-            svgcanv.appendChild( textobj);
+            this.canvasobj.appendChild( textobj);
         }
 
         // x軸追加
@@ -147,7 +153,7 @@ class SvgGraphType {
             lineobj.setAttributeNS( null, "x2", String( screenx2));
             lineobj.setAttributeNS( null, "y2", String( screeny2));
             lineobj.setAttributeNS( null, "stroke", "black");
-            svgcanv.appendChild( lineobj);
+            this.canvasobj.appendChild( lineobj);
         }
 
         // x方向の目盛と目盛ラベルの描画
@@ -162,7 +168,7 @@ class SvgGraphType {
                 lineobj.setAttributeNS( null, "x2", String( scx));
                 lineobj.setAttributeNS( null, "y2", String( screeny2));
                 lineobj.setAttributeNS( null, "stroke", "gray");
-                svgcanv.appendChild( lineobj);
+                this.canvasobj.appendChild( lineobj);
             }
 
             {
@@ -172,7 +178,7 @@ class SvgGraphType {
                 lineobj.setAttributeNS( null, "x2", String( scx));
                 lineobj.setAttributeNS( null, "y2", String( screeny2 + 5));
                 lineobj.setAttributeNS( null, "stroke", "black");
-                svgcanv.appendChild( lineobj);
+                this.canvasobj.appendChild( lineobj);
             }
 
             {
@@ -185,7 +191,7 @@ class SvgGraphType {
                 textobj.setAttribute( "text-anchor", "middle");
                 textobj.setAttribute( "dominant-baseline", "hanging");
                 textobj.textContent = String( x);
-                svgcanv.appendChild( textobj);
+                this.canvasobj.appendChild( textobj);
             }
         
         }
@@ -202,7 +208,7 @@ class SvgGraphType {
             textobj.setAttribute( "dominant-baseline", "hanging");
             textobj.setAttribute( "transform", "rotate( 270 " + String( 5) + " " + String( canvasH / 2) + ")");
             textobj.textContent = "yTitle縦軸タイトル";
-            svgcanv.appendChild( textobj);
+            this.canvasobj.appendChild( textobj);
 
         }
 
@@ -214,7 +220,7 @@ class SvgGraphType {
             lineobj.setAttributeNS( null, "x2", String( screenx1));
             lineobj.setAttributeNS( null, "y2", String( screeny2));
             lineobj.setAttributeNS( null, "stroke", "black");
-            svgcanv.appendChild( lineobj);
+            this.canvasobj.appendChild( lineobj);
         }
 
         // y方向の目盛と目盛ラベルの描画
@@ -229,7 +235,7 @@ class SvgGraphType {
                 lineobj.setAttributeNS( null, "x2", String( screenx2));
                 lineobj.setAttributeNS( null, "y2", String( scy));
                 lineobj.setAttributeNS( null, "stroke", "gray");
-                svgcanv.appendChild( lineobj);
+                this.canvasobj.appendChild( lineobj);
             }
 
             {
@@ -239,7 +245,7 @@ class SvgGraphType {
                 lineobj.setAttributeNS( null, "x2", String( screenx1 - 5));
                 lineobj.setAttributeNS( null, "y2", String( scy));
                 lineobj.setAttributeNS( null, "stroke", "black");
-                svgcanv.appendChild( lineobj);
+                this.canvasobj.appendChild( lineobj);
             }
 
             {
@@ -253,7 +259,7 @@ class SvgGraphType {
                 textobj.setAttribute( "dominant-baseline", "alphabetic");
                 textobj.setAttribute( "transform", "rotate( 270 " + String( screenx1 - 5) + " " + String( scy) + ")");
                 textobj.textContent = String( y);
-                svgcanv.appendChild( textobj);
+                this.canvasobj.appendChild( textobj);
             }
         
         }
@@ -275,14 +281,13 @@ class SvgGraphType {
             circleobj.setAttributeNS( null, "r", String( r));
             circleobj.setAttributeNS( null, "fill", colorstr);
             circleobj.setAttributeNS( null, "stroke", colorstr);
-            svgcanv.appendChild( circleobj);
+            this.canvasobj.appendChild( circleobj);
         }
 
     }
 
 };
 
-let svggraphobj = new SvgGraphType();
 
 
 /*
