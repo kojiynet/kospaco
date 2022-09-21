@@ -6,6 +6,7 @@ party.js
 
 kutil.jsが読まれている必要がある。
 svggraph.jsが読まれている必要がある。
+spacegraphobjが定義されている必要がある。
 
 */
 
@@ -83,7 +84,7 @@ class PartyGroupType {
             let x = this.parties[ i].xpos;
             let y = this.parties[ i].ypos;
             let colorstr = this.parties[ i].getRGBStr();
-            svggraphobj.drawSinglePoint( x, y, 3, colorstr);
+            spacegraphobj.drawSinglePoint( x, y, 3, colorstr);
         }
     }
 

@@ -63,7 +63,7 @@ class CanvTrans {
 class SvgGraphType {
 
     // svgcanv0は描画対象のSVGタグの要素
-    constructor( svgcanv0)
+    constructor( svgcanv0, mathx_l, mathx_u, xstep, mathy_l, mathy_u, ystep)
     {
 
         this.canvasobj = svgcanv0;
@@ -77,22 +77,35 @@ class SvgGraphType {
         this.screeny2 = this.canvasH - 40; // canvasのうち、下側40は余白
 
         // 理論座標系のx範囲
-        this.mathx1 = -3;
-        this.mathx2 =  3;
+        this.mathx1 = mathx_l;
+        this.mathx2 = mathx_u;
 
         // 理論座標系のy範囲
-        this.mathy1 = -3;
-        this.mathy2 =  3;
+        this.mathy1 = mathy_l;
+        this.mathy2 = mathy_u;
 
         // x方向とy方向の目盛の間隔
-        this.xstep = 1;
-        this.ystep = 1;
+        this.xstep = xstep;
+        this.ystep = ystep;
 
         this.ct = new CanvTrans(
             this.screenx1, this.screeny1, this.screenx2, this.screeny2,
             this.mathx1, this.mathy1, this.mathx2, this.mathy2
         );
+
+        this.xlabel = "";
+        this.ylabel = "";
   
+    }
+
+    setXlabel( l0)
+    {
+        this.xlabel = l0;
+    }
+  
+    setYlabel( l0)
+    {
+        this.ylabel = l0;
     }
   
     clear()
@@ -141,7 +154,7 @@ class SvgGraphType {
             textobj.setAttribute( "font-size", "15");
             textobj.setAttribute( "text-anchor", "middle");
             textobj.setAttribute( "dominant-baseline", "alphabetic");
-            textobj.textContent = "xTitle横軸タイトル";
+            textobj.textContent = this.xlabel;
             this.canvasobj.appendChild( textobj);
         }
 
@@ -207,7 +220,7 @@ class SvgGraphType {
             textobj.setAttribute( "text-anchor", "middle");
             textobj.setAttribute( "dominant-baseline", "hanging");
             textobj.setAttribute( "transform", "rotate( 270 " + String( 5) + " " + String( canvasH / 2) + ")");
-            textobj.textContent = "yTitle縦軸タイトル";
+            textobj.textContent = this.ylabel;
             this.canvasobj.appendChild( textobj);
 
         }

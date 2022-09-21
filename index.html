@@ -6,6 +6,8 @@ Copyright (C) 2022 Koji Yamamoto
 
 ・結果のグラフ＝位置の軌跡と、得票数の軌跡を。
 
+・政党の最適反応を加える。。
+
 以下を変えられるように？
 ・正規分布か一様分布か
 ・疎外による棄権を設定するか
@@ -18,7 +20,8 @@ Copyright (C) 2022 Koji Yamamoto
 
 <!-- version info -->
 <script>
-  let verinfo = "2022-08-08"
+  let verinfo = "2022-09-21"
+  let year = "2022"
 </script>
 
 <head>
@@ -159,6 +162,8 @@ Copyright (C) 2022 Koji Yamamoto
 
   let spacecanvas = document.getElementById( "spacecanvas");
 
+  let resultcanvas = document.getElementById( "resultcanvas");
+
   let footer = document.getElementById( "footer");
 
 </script>
@@ -173,11 +178,19 @@ Copyright (C) 2022 Koji Yamamoto
 <!-- 初期処理 -->
 <script>
 
-  footer.innerText = 'On-Browser Spatial Competition Simulator "kospaco" Ver. ' + verinfo + ' -- Copyright (C) 2022 Koji Yamamoto'; 
+  footer.innerText = 'On-Browser Spatial Competition Simulator "kospaco" Ver. ' + verinfo + ' -- Copyright (C) 2022-' + year + ' Koji Yamamoto'; 
 
-  let svggraphobj = new SvgGraphType( spacecanvas);
-  svggraphobj.clear();
-  svggraphobj.drawBackground();
+  let spacegraphobj = new SvgGraphType( spacecanvas, -3, 3, 1, -3, 3, 1);
+  spacegraphobj.setXlabel( "X-axis");
+  spacegraphobj.setYlabel( "Y-axis");
+  spacegraphobj.clear();
+  spacegraphobj.drawBackground();
+
+  let resultgraphobj = new SvgGraphType( resultcanvas, 0, 100, 20, -3, 3, 1);
+  resultgraphobj.setXlabel( "ステップ");
+  resultgraphobj.setYlabel( "位置");
+  resultgraphobj.clear();
+  resultgraphobj.drawBackground();
 
   let partystep = 0.2;
 
@@ -219,8 +232,8 @@ Copyright (C) 2022 Koji Yamamoto
       election();
 
       msg.innerHTML = "第1政党の得票：" + partygroup.parties[ 0].vote + "　第2政党の得票：" + partygroup.parties[ 1].vote;
-      svggraphobj.clear();
-      svggraphobj.drawBackground();
+      spacegraphobj.clear();
+      spacegraphobj.drawBackground();
       votergroup.plot();
       partygroup.plot();
 
@@ -231,8 +244,8 @@ Copyright (C) 2022 Koji Yamamoto
     "click",
     () => {
 
-      svggraphobj.clear();
-      svggraphobj.drawBackground();
+      spacegraphobj.clear();
+      spacegraphobj.drawBackground();
 
       setupButton.disabled = false;
 

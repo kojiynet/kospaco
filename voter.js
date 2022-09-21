@@ -6,7 +6,7 @@ voter.js
 
 kutil.jsが読まれている必要がある。
 svggraph.jsが読まれている必要がある。
-svggraphobjが定義されている必要がある。
+spacegraphobjが定義されている必要がある。
 
 */
 
@@ -68,7 +68,7 @@ class VoterGroupType {
             let x = this.voters[ i].xpos;
             let y = this.voters[ i].ypos;
             let rgbstr = this.voters[ i].getRGBStr();
-            svggraphobj.drawSinglePoint( x, y, 1, rgbstr);
+            spacegraphobj.drawSinglePoint( x, y, 1, rgbstr);
         }
     }
 
