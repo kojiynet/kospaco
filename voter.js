@@ -68,7 +68,7 @@ class VoterGroupType {
             let x = this.voters[ i].xpos;
             let y = this.voters[ i].ypos;
             let rgbstr = this.voters[ i].getRGBStr();
-            spacegraphobj.drawSinglePoint( x, y, 1, rgbstr);
+            spacegraphobj.drawSinglePoint( x, y, 1, rgbstr, rgbstr);
         }
     }
 

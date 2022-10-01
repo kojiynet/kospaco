@@ -281,19 +281,27 @@ class SvgGraphType {
 
     // 1つだけデータ点を描画
     // rは半径で、理論座標ではなくスクリーン座標の単位で指定する。
-    drawSinglePoint( mx, my, r, colorstr)
+    drawSinglePoint( mx, my, r, stroke_colorstr, fill_colorstr)
     {
 
         let x = this.ct.xMathToScreen( mx); 
         let y = this.ct.yMathToScreen( my);
+
+        if ( x < this.screenx1 || x > this.screenx2 || y < this.screeny1 || y > this.screeny2){
+            return;
+        }
 
         {
             let circleobj = document.createElementNS( "http://www.w3.org/2000/svg", "circle");
             circleobj.setAttributeNS( null, "cx", String( x));
             circleobj.setAttributeNS( null, "cy", String( y));
             circleobj.setAttributeNS( null, "r", String( r));
-            circleobj.setAttributeNS( null, "fill", colorstr);
-            circleobj.setAttributeNS( null, "stroke", colorstr);
+            circleobj.setAttributeNS( null, "stroke", stroke_colorstr);
+            if ( fill_colorstr != null && fill_colorstr != ""){
+                circleobj.setAttributeNS( null, "fill", fill_colorstr);
+            } else {
+                circleobj.setAttributeNS( null, "fill", "none");
+            }
             this.canvasobj.appendChild( circleobj);
         }
 

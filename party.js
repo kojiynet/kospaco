@@ -84,7 +84,7 @@ class PartyGroupType {
             let x = this.parties[ i].xpos;
             let y = this.parties[ i].ypos;
             let colorstr = this.parties[ i].getRGBStr();
-            spacegraphobj.drawSinglePoint( x, y, 3, colorstr);
+            spacegraphobj.drawSinglePoint( x, y, 5, colorstr, colorstr);
         }
     }
 
